@@ -1,9 +1,19 @@
 import { Box, Typography } from "@mui/material";
 
-export const Header = () => (
+interface IHeader {
+  todoCount: number;
+}
+
+export const Header: React.FC<IHeader> = ({ todoCount }) => (
   <Box>
-    <Typography sx={{ fontSize: 35 }} variant="h1" component="h1" gutterBottom>
-      Todo list
+    <Typography
+      sx={{ fontSize: 35, fontWeight: "bold" }}
+      variant="h1"
+      component="h1"
+      gutterBottom
+      className="header__title"
+    >
+      Todo list {todoCount}
     </Typography>
   </Box>
 );

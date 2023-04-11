@@ -1,18 +1,21 @@
 import { Paper, Box, Typography, IconButton } from "@mui/material";
-import { Delete as DeleteIcon } from "@mui/icons-material";
+import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 
-type Todo = {
-  id: number;
-  name: string;
-  checked: boolean;
-  description: string;
-};
+import { Todo } from "../../../App";
 
 interface ITodoItem {
   todo: Todo;
+  onEdit: (id: Todo["id"]) => void;
+  onCheckTodo: (id: Todo["id"]) => void;
+  onDeleteTodo: (id: Todo["id"]) => void;
 }
 
-export const TodoItem: React.FC<ITodoItem> = ({ todo }) => (
+export const TodoItem: React.FC<ITodoItem> = ({
+  todo,
+  onEdit,
+  onCheckTodo,
+  onDeleteTodo,
+}) => (
   <Paper
     elevation={2}
     sx={{
@@ -23,10 +26,12 @@ export const TodoItem: React.FC<ITodoItem> = ({ todo }) => (
       marginTop: "15px",
       padding: "25px 28px",
       borderRadius: 2,
+      opacity: todo.checked ? 0.5 : 1,
     }}
   >
     <Box textAlign="left">
       <Typography
+        onClick={() => onCheckTodo(todo.id)}
         sx={{
           cursor: "pointer",
           textDecorationLine: todo.checked ? "line-through" : "none",
@@ -43,8 +48,19 @@ export const TodoItem: React.FC<ITodoItem> = ({ todo }) => (
     </Box>
 
     <Box>
-      <IconButton color="error" aria-label="delete">
+      <IconButton
+        onClick={() => onDeleteTodo(todo.id)}
+        color="error"
+        aria-label="delete"
+      >
         <DeleteIcon />
+      </IconButton>
+      <IconButton
+        onClick={() => onEdit(todo.id)}
+        color="primary"
+        aria-label="edit"
+      >
+        <EditIcon />
       </IconButton>
     </Box>
   </Paper>

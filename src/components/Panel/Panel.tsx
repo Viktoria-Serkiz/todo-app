@@ -2,12 +2,18 @@ import { useState } from "react";
 import { TextField, Paper, Button } from "@mui/material";
 import { Add } from "@mui/icons-material";
 
+import { Todo } from "../../App";
+
 const DEFAULT_TODO = { name: "", description: "" };
 
-export const Panel = () => {
+interface IPanel {
+  onAddTodo: ({ name, description }: Omit<Todo, "id" | "checked">) => void;
+}
+export const Panel: React.FC<IPanel> = ({ onAddTodo }) => {
   const [todo, setTodo] = useState(DEFAULT_TODO);
 
   const onClick = () => {
+    onAddTodo(todo);
     setTodo(DEFAULT_TODO);
   };
 
@@ -20,11 +26,11 @@ export const Panel = () => {
     <Paper
       elevation={4}
       sx={{
-        padding: "25px 30px",
-        borderRadius: 2,
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
+        padding: "25px 30px",
+        borderRadius: 2,
         gap: 2,
       }}
     >

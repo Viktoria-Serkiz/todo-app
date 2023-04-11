@@ -15,4 +15,19 @@
   align-items: center;
   text-align: center;
   height: 100vh;
+  background: radial-gradient(
+    circle,
+    rgba(238, 174, 202, 1) 0%,
+    rgba(188, 227, 245, 1) 100%
+  );
+}
+
+.header__title {
+  font-weight: 700;
+  font-size: 13rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-shadow: 0em 0.02em 0.03em white, -0.01em 0.01em #333, -0.02em 0.02em #333,
+    -0.03em 0.03em #333, -0.04em 0.04em #333, -0.01em -0.01em 0.03em #000,
+    -0.03em -0.03em 0.03em #373636;
 }
