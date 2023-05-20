@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Box } from "@mui/material";
 
@@ -14,30 +14,43 @@ export type Todo = {
 };
 
 export const App = () => {
-  const [editTodoId, setEditTodoId] = useState<number | null>(null);
-  const [todoList, setTodoList] = useState([
-    { id: 1, name: "task 1", description: "test", checked: false },
-  ]);
+  const [editTodo, setEditTodo] = useState<Todo | null>(null);
+  const [todoList, setTodoList] = useState<Todo[]>([]);
+
+  useEffect(() => {
+    const savedTodoList = localStorage.getItem("todoList");
+    if (savedTodoList) {
+      setTodoList(JSON.parse(savedTodoList));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("todoList", JSON.stringify(todoList));
+  }, [todoList]);
 
   const onDeleteTodo = (id: Todo["id"]) => {
-    setTodoList(todoList.filter((todo) => todo.id !== id));
+    setTodoList((prevTodoList) =>
+      prevTodoList.filter((todo) => todo.id !== id)
+    );
   };
 
-  const onAddTodo = ({ name, description }: Omit<Todo, "id" | "checked">) => {
-    setTodoList([
-      ...todoList,
+  const onAddTodo = (todo: Omit<Todo, "id" | "checked">) => {
+    setTodoList((prevTodoList) => [
+      ...prevTodoList,
       {
-        id: todoList[todoList.length - 1].id + 1,
-        description,
-        name,
+        id:
+          prevTodoList.length > 0
+            ? prevTodoList[prevTodoList.length - 1].id + 1
+            : 0,
+        ...todo,
         checked: false,
       },
     ]);
   };
 
   const onCheckTodo = (id: Todo["id"]) => {
-    setTodoList(
-      todoList.map((todo) => {
+    setTodoList((prevTodoList) =>
+      prevTodoList.map((todo) => {
         if (todo.id === id) {
           return { ...todo, checked: !todo.checked };
         }
@@ -47,22 +60,21 @@ export const App = () => {
   };
 
   const onEdit = (id: Todo["id"]) => {
-    setEditTodoId(id);
+    const todo = todoList.find((todo) => todo.id === id);
+    if (todo) {
+      setEditTodo(todo);
+    }
   };
 
-  const onChangeTodo = ({
-    name,
-    description,
-  }: Omit<Todo, "id" | "checked">) => {
-    setTodoList(
-      todoList.map((todo) => {
-        if (todo.id === editTodoId) {
-          return { ...todo, name, description };
-        }
-        return todo;
-      })
+  const onChangeTodo = (updatedTodo: Omit<Todo, "checked">) => {
+    setTodoList((prevTodoList) =>
+      prevTodoList.map((todoItem) =>
+        todoItem.id === editTodo?.id
+          ? { ...todoItem, ...updatedTodo }
+          : todoItem
+      )
     );
-    setEditTodoId(null);
+    setEditTodo(null);
   };
 
   return (
@@ -73,7 +85,7 @@ export const App = () => {
         <TodoList
           onEdit={onEdit}
           todoList={todoList}
-          editTodoId={editTodoId}
+          editTodo={editTodo}
           onCheckTodo={onCheckTodo}
           onDeleteTodo={onDeleteTodo}
           onChangeTodo={onChangeTodo}

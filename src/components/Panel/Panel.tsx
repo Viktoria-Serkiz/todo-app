@@ -1,25 +1,27 @@
-import { useState } from "react";
-import { TextField, Paper, Button } from "@mui/material";
+import { FC, ChangeEvent, useState } from "react";
+
 import { Add } from "@mui/icons-material";
+import { TextField, Paper, Button } from "@mui/material";
 
 import { Todo } from "../../App";
 
-const DEFAULT_TODO = { name: "", description: "" };
-
-interface IPanel {
-  onAddTodo: ({ name, description }: Omit<Todo, "id" | "checked">) => void;
+interface PanelProps {
+  onAddTodo: (todo: Omit<Todo, "id" | "checked">) => void;
 }
-export const Panel: React.FC<IPanel> = ({ onAddTodo }) => {
-  const [todo, setTodo] = useState(DEFAULT_TODO);
+
+const Panel: FC<PanelProps> = ({ onAddTodo }) => {
+  const [todo, setTodo] = useState({ name: "", description: "" });
 
   const onClick = () => {
-    onAddTodo(todo);
-    setTodo(DEFAULT_TODO);
+    if (todo.name.trim() !== "" && todo.description.trim() !== "") {
+      onAddTodo({ ...todo });
+      setTodo({ name: "", description: "" });
+    }
   };
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
-    setTodo({ ...todo, [name]: value });
+    setTodo((prevTodo) => ({ ...prevTodo, [name]: value }));
   };
 
   return (
@@ -37,24 +39,31 @@ export const Panel: React.FC<IPanel> = ({ onAddTodo }) => {
       <TextField
         value={todo.name}
         onChange={onChange}
-        id="outlined-basic"
+        id="outlined-basic-name"
         name="name"
-        label="name"
+        label="Name"
         variant="outlined"
         fullWidth
       />
       <TextField
         value={todo.description}
         onChange={onChange}
-        id="outlined-basic"
+        id="outlined-basic-description"
         name="description"
-        label="description"
+        label="Description"
         variant="outlined"
         fullWidth
       />
-      <Button variant="outlined" onClick={onClick} startIcon={<Add />}>
+      <Button
+        variant="outlined"
+        onClick={onClick}
+        startIcon={<Add />}
+        disabled={todo.name.trim() === "" || todo.description.trim() === ""}
+      >
         Add
       </Button>
     </Paper>
   );
 };
+
+export { Panel };

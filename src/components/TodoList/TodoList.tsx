@@ -1,41 +1,49 @@
+import { FC } from "react";
+
 import { Box } from "@mui/material";
 
 import { Todo } from "../../App";
 import { TodoItem } from "./TodoItem/TodoItem";
 import { EditTodoItem } from "./EditTodoItem/EditTodoItem";
 
-interface ITodoList {
+import "../../scss/main.scss";
+
+interface TodoListProps {
   todoList: Todo[];
-  editTodoId: Todo["id"] | null;
+  editTodo: Todo | null;
   onEdit: (id: Todo["id"]) => void;
   onCheckTodo: (id: Todo["id"]) => void;
   onDeleteTodo: (id: Todo["id"]) => void;
-  onChangeTodo: ({ name, description }: Omit<Todo, "id" | "checked">) => void;
+  onChangeTodo: (todo: Omit<Todo, "checked">) => void;
 }
 
-export const TodoList: React.FC<ITodoList> = ({
+const TodoList: FC<TodoListProps> = ({
   onEdit,
   todoList,
-  editTodoId,
+  editTodo,
   onCheckTodo,
   onDeleteTodo,
   onChangeTodo,
 }) => (
   <Box>
-    {todoList.map((todo) => {
-      if (todo.id === editTodoId)
-        return (
-          <EditTodoItem key={todo.id} todo={todo} onChangeTodo={onChangeTodo} />
-        );
-      return (
-        <TodoItem
-          todo={todo}
-          key={todo.id}
-          onEdit={onEdit}
-          onCheckTodo={onCheckTodo}
-          onDeleteTodo={onDeleteTodo}
-        />
-      );
-    })}
+    {todoList.length === 0 ? (
+      <p className="text">No todos found</p>
+    ) : (
+      todoList.map((todo) =>
+        todo.id === editTodo?.id ? (
+          <EditTodoItem todo={todo} onChangeTodo={onChangeTodo} />
+        ) : (
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            onEdit={onEdit}
+            onCheckTodo={onCheckTodo}
+            onDeleteTodo={onDeleteTodo}
+          />
+        )
+      )
+    )}
   </Box>
 );
+
+export { TodoList };

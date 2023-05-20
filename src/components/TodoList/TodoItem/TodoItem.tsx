@@ -1,16 +1,18 @@
+import { FC } from "react";
+
 import { Paper, Box, Typography, IconButton } from "@mui/material";
 import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 
 import { Todo } from "../../../App";
 
-interface ITodoItem {
+interface TodoItemProps {
   todo: Todo;
   onEdit: (id: Todo["id"]) => void;
   onCheckTodo: (id: Todo["id"]) => void;
   onDeleteTodo: (id: Todo["id"]) => void;
 }
 
-export const TodoItem: React.FC<ITodoItem> = ({
+const TodoItem: FC<TodoItemProps> = ({
   todo,
   onEdit,
   onCheckTodo,
@@ -52,6 +54,7 @@ export const TodoItem: React.FC<ITodoItem> = ({
         onClick={() => onDeleteTodo(todo.id)}
         color="error"
         aria-label="delete"
+        title="Delete"
       >
         <DeleteIcon />
       </IconButton>
@@ -59,9 +62,12 @@ export const TodoItem: React.FC<ITodoItem> = ({
         onClick={() => onEdit(todo.id)}
         color="primary"
         aria-label="edit"
+        title="Edit"
       >
         <EditIcon />
       </IconButton>
     </Box>
   </Paper>
 );
+
+export { TodoItem };

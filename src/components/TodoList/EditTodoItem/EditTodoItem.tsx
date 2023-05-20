@@ -1,29 +1,31 @@
-import { useState } from "react";
-import { Paper, TextField, Button } from "@mui/material";
+import React, { useState } from "react";
+
 import { Edit as EditIcon } from "@mui/icons-material";
+import { Paper, TextField, Button } from "@mui/material";
 
 import { Todo } from "../../../App";
 
-interface IEditTodoItem {
+interface EditTodoItemProps {
   todo: Todo;
-  onChangeTodo: ({ name, description }: Omit<Todo, "id" | "checked">) => void;
+  onChangeTodo: (todo: Omit<Todo, "checked">) => void;
 }
 
-export const EditTodoItem: React.FC<IEditTodoItem> = ({ todo, onChangeTodo }) => {
+const EditTodoItem: React.FC<EditTodoItemProps> = ({ todo, onChangeTodo }) => {
   const [editTodo, setEditTodo] = useState({
-    name: todo.name,
-    description: todo.description,
+    ...todo,
   });
 
   const onClick = () => {
     onChangeTodo(editTodo);
-
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
-    setEditTodo({ ...todo, [name]: value });
-  }; 
+    setEditTodo({
+      ...todo,
+      [name]: value,
+    });
+  };
 
   return (
     <Paper
@@ -41,7 +43,7 @@ export const EditTodoItem: React.FC<IEditTodoItem> = ({ todo, onChangeTodo }) =>
       <TextField
         value={editTodo.name}
         onChange={onChange}
-        id="outlined-basic"
+        id="outlined-basic-name"
         name="name"
         label="name"
         variant="outlined"
@@ -50,16 +52,24 @@ export const EditTodoItem: React.FC<IEditTodoItem> = ({ todo, onChangeTodo }) =>
       <TextField
         value={editTodo.description}
         onChange={onChange}
-        id="outlined-basic"
+        id="outlined-basic-description"
         name="description"
         label="description"
         variant="outlined"
         fullWidth
       />
 
-      <Button variant="outlined" onClick={onClick} startIcon={<EditIcon />}>
+      <Button
+        variant="outlined"
+        onClick={onClick}
+        disabled={!todo.name || !todo.description}
+        startIcon={<EditIcon />}
+        title="Edit"
+      >
         Edit
       </Button>
     </Paper>
   );
 };
+
+export { EditTodoItem };
